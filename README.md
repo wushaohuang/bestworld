@@ -206,6 +206,42 @@
 				- opoTotal += OPEN_PO_QTY
 				- moiTotal += MTD_ORDER_INTAKE
 				- msTotal += MTD_SALES
+
+	- 如果是material
+		1. 对于demandMaterialTotalMap的每一个元素
+			- 将它里面的数据列直接增量存于demandTotal中
+			- ssTotal += SAFETY_STOCK
+			- amuTotal += AMU
+			- amfTotal += AMF
+			- sohTotal += STOCK_ON_HAND
+			- opoTotal += OPEN_PO_QTY
+			- moiTotal += MTD_ORDER_INTAKE
+			- msTotal += MTD_SALES
+		2. 对于supplyMaterialTotalMap的每一个元素
+			- 将它里面的数据列直接增量存于supplyTotal中
+			- 注意，此处有一个判断，对于相同的material+plant_code，如果在遍历demandGroupTotalMap时算过了ssTotal、amuTotal...等，在遍历supplyGroupTotalMap时就不会再重复追加了
+				- ssTotal += SAFETY_STOCK
+				- amuTotal += AMU
+				- amfTotal += AMF
+				- sohTotal += STOCK_ON_HAND
+				- opoTotal += OPEN_PO_QTY
+				- moiTotal += MTD_ORDER_INTAKE
+				- msTotal += MTD_SALES
+
+- 将上边算好的ssTotal、amfTotal、amuTotal、sohTotal、opoTotal、moiTotal、msTotal分别存放入（put）demandTotal、supplyTotal、balanceTotal中
+
+- 计算Total Balance
+	1. 这个物料的可用库存 = 当前库存 - SS - AMU - AMF
+	2. 如果是By Day, 当日供给无法抵消当日需求
+		- balance = 可用库存 - 需求
+		- 如果当日供给不为空, 则加到明日
+	3. 如果不是By Day
+		- balance = 可用库存 - 需求 + 供给
+	4. 最终将balance存入balanceTotal中
+
+- 根据用户选择的显示行
+
+
 		
 
 
