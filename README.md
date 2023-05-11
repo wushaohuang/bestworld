@@ -153,8 +153,19 @@
 			1. 分别将demand和supply中的非数据列（不在dates中的列）放入balance中，且 balance.put("CATEGORY", "Balance");
 		- 计算数据列
 			1. 对于dates中每一个元素（对应表中的每一列）进行遍历
-			2. 
-		
+			2. 计算这个物料的可用库存
+			3. 计算balance
+				- By Day
+					- supply is null
+						- balance = 可用库存 - 需求
+					- supply is not null
+						- 如果当日供给不为空, 则加到明日
+				- Others
+					- supply is null
+						- balance = 可用库存 - 需求
+					- supply is not null
+						- balance = 可用库存 - 需求 + 供给
+				- 如果是week, 还要计算critical_level的变量
 
 
 
