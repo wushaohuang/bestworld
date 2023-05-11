@@ -21,7 +21,9 @@
     1. 判断selectedCategory是否为空，如果不为空，判断FUTURE_DUE和PAST_DUE中元素是否存在于CATEGORY中，如果存在，字段名为"'${item}'_QTY" AS "${item}"，否则，字段名为0 AS "${item}"。其中item为dates中的元素
     2. 如果用户未选中OSO_NORMAL，则0 AS "TIPS_${item}_OSO_NORMAL",否则"'${item}'_OSO_NORMAL" AS "TIPS_${item}_OSO_NORMAL"
     3. OSO_CB、UD_MID_AGING、UD_CB、UD_NORMAL、UD_LONG_AGING同理（与OSO_NORMAL相同）
-    4. ------------------------------最外层字段取完-----------------------------------
+ 
+ ------------------------------最外层字段取完-----------------------------------
+ 
     5. 基于底表DEMAND_SUPPLY_DEMAND_V，根据PIVOT进行行转列
     ```sql
       SUM(QUANTITY ${valueColumnName}) QTY,
