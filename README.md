@@ -73,57 +73,57 @@
     12. 根据以上转换后的表和转换后的字段，进行查询得到supplyList
 
 - demandList
-    // 基于demandList将demand信息分为2类, 一类是有group的, 一类是没有group的
-    // 初始化demandGroupMap和demandMaterialMap
-    	// 判断GROUP_MATERIAL字段是否为空，如果为空，则将获取到的“MATERIAL@PLANT_CODE”作为键值对的键存于demandMaterialMap中
-    	// 如果不为空，则将获取到的“GROUP_MATERIAL@PLANT_CODE”作为键值对的键存于demandGroupMap中
+    1. 基于demandList将demand信息分为2类, 一类是有group的, 一类是没有group的
+    2. 初始化demandGroupMap和demandMaterialMap
+    	- 判断GROUP_MATERIAL字段是否为空，如果为空，则将获取到的“MATERIAL@PLANT_CODE”作为键值对的键存于demandMaterialMap中
+    	- 如果不为空，则将获取到的“GROUP_MATERIAL@PLANT_CODE”作为键值对的键存于demandGroupMap中
 
-    // 对demandGroupMap和demandMaterialMap分别算Total, 放在两个新的Map里（demandGroupTotalMap和demandMaterialTotalMap）
-    // 初始化demandGroupTotalMap和demandMaterialTotalMap
+    3. 对demandGroupMap和demandMaterialMap分别算Total, 放在两个新的Map里（demandGroupTotalMap和demandMaterialTotalMap）
+    4. 初始化demandGroupTotalMap和demandMaterialTotalMap
 
-    // demand group
-    	// 针对demandGroupMap中的元素，将它的元素们根据material+plant_code汇总
-    	// 不是dates元素或者TIPS开头的字段，在多行数据的情况下只取一行数据；日期或者TIPS开头的字段，在多行数据的情况下该字段取汇总值（sum）
-      			// getOrDefault(key, default)如果存在key, 则返回其对应的value, 否则返回给定的默认值
-    	// 对于每一个元素将其CATEGORY设置为Demand Total
-    // 最终将demandGroupMap中所有元素根据material + plant_code聚合后的结果存入demandGroupTotalMap中
+    5. demand group
+    	- 针对demandGroupMap中的元素，将它的元素们根据material+plant_code汇总
+    	- 不是dates元素或者TIPS开头的字段，在多行数据的情况下只取一行数据；日期或者TIPS开头的字段，在多行数据的情况下该字段取汇总值（sum）
+      			- getOrDefault(key, default)如果存在key, 则返回其对应的value, 否则返回给定的默认值
+    	- 对于每一个元素将其CATEGORY设置为Demand Total
+    6. 最终将demandGroupMap中所有元素根据material + plant_code聚合后的结果存入demandGroupTotalMap中
 
-    // demand material
-    	// 针对demandMaterialMap中的元素，将它的元素们根据material+plant_code汇总
-    	// 不是dates元素或者TIPS开头的字段，在多行数据的情况下只取一行数据；日期或者TIPS开头的字段，在多行数据的情况下该字段取汇总值（sum）
-      			// getOrDefault(key, default)如果存在key, 则返回其对应的value, 否则返回给定的默认值
-    	// 对于每一个元素将其GROUP_MATERIAL设置为""，CATEGORY设置为Demand Total
-    // 最终将demandMaterialMap中所有元素根据material + plant_code聚合后的结果存入demandMaterialTotalMap中
+    7. demand material
+    	- 针对demandMaterialMap中的元素，将它的元素们根据material+plant_code汇总
+    	- 不是dates元素或者TIPS开头的字段，在多行数据的情况下只取一行数据；日期或者TIPS开头的字段，在多行数据的情况下该字段取汇总值（sum）
+      			- getOrDefault(key, default)如果存在key, 则返回其对应的value, 否则返回给定的默认值
+    	- 对于每一个元素将其GROUP_MATERIAL设置为""，CATEGORY设置为Demand Total
+    8. 最终将demandMaterialMap中所有元素根据material + plant_code聚合后的结果存入demandMaterialTotalMap中
 
-// supplyList
-    // 基于supplyList将supply信息分为2类, 一类是有group的, 一类是没有group的
-    // 初始化supplyGroupMap和supplyMaterialMap
-    	// 判断GROUP_MATERIAL字段是否为空，如果为空，则将获取到的“MATERIAL@PLANT_CODE”作为键值对的键存于demandMaterialMap中
-    	// 如果不为空，则将获取到的“GROUP_MATERIAL@PLANT_CODE”作为键值对的键存于demandGroupMap中
+- supplyList
+    1. 基于supplyList将supply信息分为2类, 一类是有group的, 一类是没有group的
+    2. 初始化supplyGroupMap和supplyMaterialMap
+    	- 判断GROUP_MATERIAL字段是否为空，如果为空，则将获取到的“MATERIAL@PLANT_CODE”作为键值对的键存于demandMaterialMap中
+    	- 如果不为空，则将获取到的“GROUP_MATERIAL@PLANT_CODE”作为键值对的键存于demandGroupMap中
 
-    // 对supplyGroupMap和supplyMaterialMap分别算Total, 放在两个新的Map里（supplyGroupTotalMap和supplyMaterialTotalMap）
-    // 初始化supplyGroupTotalMap和supplyMaterialTotalMap
+    3. 对supplyGroupMap和supplyMaterialMap分别算Total, 放在两个新的Map里（supplyGroupTotalMap和supplyMaterialTotalMap）
+    4. 初始化supplyGroupTotalMap和supplyMaterialTotalMap
 
-    // supply group
-    	// 针对supplyGroupMap中的元素，将它的元素们根据material+plant_code汇总
-    	// 不是dates元素或者TIPS开头的字段，在多行数据的情况下只取一行数据；日期或者TIPS开头的字段，在多行数据的情况下该字段取汇总值（sum）
-      			// getOrDefault(key, default)如果存在key, 则返回其对应的value, 否则返回给定的默认值
-    	// 对于每一个元素将其CATEGORY设置为Demand Total
-    // 最终将supplyGroupMap中所有元素根据material + plant_code聚合后的结果存入supplyGroupTotalMap中
+    5. supply group
+    	- 针对supplyGroupMap中的元素，将它的元素们根据material+plant_code汇总
+    	- 不是dates元素或者TIPS开头的字段，在多行数据的情况下只取一行数据；日期或者TIPS开头的字段，在多行数据的情况下该字段取汇总值（sum）
+      			- getOrDefault(key, default)如果存在key, 则返回其对应的value, 否则返回给定的默认值
+    	- 对于每一个元素将其CATEGORY设置为Demand Total
+    6. 最终将supplyGroupMap中所有元素根据material + plant_code聚合后的结果存入supplyGroupTotalMap中
 
-    // supply material
-    	// 针对supplyMaterialMap中的元素，将它的元素们根据material+plant_code汇总
-    	// 不是dates元素或者TIPS开头的字段，在多行数据的情况下只取一行数据；日期或者TIPS开头的字段，在多行数据的情况下该字段取汇总值（sum）
-      			// getOrDefault(key, default)如果存在key, 则返回其对应的value, 否则返回给定的默认值
-    	// 对于每一个元素将其GROUP_MATERIAL设置为""，CATEGORY设置为Supply Total
-    // 最终将supplyMaterialMap中所有元素根据material + plant_code聚合后的结果存入supplyMaterialTotalMap中
+    7. supply material
+    	- 针对supplyMaterialMap中的元素，将它的元素们根据material+plant_code汇总
+    	- 不是dates元素或者TIPS开头的字段，在多行数据的情况下只取一行数据；日期或者TIPS开头的字段，在多行数据的情况下该字段取汇总值（sum）
+      			- getOrDefault(key, default)如果存在key, 则返回其对应的value, 否则返回给定的默认值
+    	- 对于每一个元素将其GROUP_MATERIAL设置为""，CATEGORY设置为Supply Total
+    8. 最终将supplyMaterialMap中所有元素根据material + plant_code聚合后的结果存入supplyMaterialTotalMap中
 
-// 查询comments
-    // 查询当前周数并存于weekNo中(queryCurrentWeek)
-    // queryReport1CommentsByUserid
-	    // 基于DEMAND_SUPPLY_COMMENTS
-	    // where条件为周数weekNo和用户id
-    // 初始化commentsMap，并将commentsList中的MATERIAL@PLANT_CODE作为键，COMMENTS作为值存入commentsMap
+- 查询comments
+    1. 查询当前周数并存于weekNo中(queryCurrentWeek)
+    2. queryReport1CommentsByUserid
+	    - 基于DEMAND_SUPPLY_COMMENTS
+	    - where条件为周数weekNo和用户id
+    3. 初始化commentsMap，并将commentsList中的MATERIAL@PLANT_CODE作为键，COMMENTS作为值存入commentsMap
 
 
 
