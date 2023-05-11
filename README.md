@@ -126,6 +126,26 @@
 	1. queryReport1CriticalScript()
 		- 在DEMAND_SUPPLY_CRITICAL_LEVEL_SETTINGS中获取Critical Level
 
+- 计算 Balance
+	- 初始化groupBalanceMap和materialBalanceMap
+	- 计算group balance
+		1. queryReport1Group() 获取demand和supply中所有为group的料号信息（根据T.GROUP_MATERIAL IS NOT NULL进行筛选）
+			- 基于DEMAND_SUPPLY_DEMAND_V和DEMAND_SUPPLY_SUPPLY_V根据material+plant_code进行聚合，最后将两张表的结果进行拼接
+			- 注意：针对上边两张表的查询中有INNER JOIN DEMAND_SUPPLY_CRITICAL_MATERIAL_V on USER_ID = #{session.userid,jdbcType=VARCHAR}查询条件，故要注意只看用户自己的
+			- WHERE T.GROUP_MATERIAL IS NOT NULL筛选出所有属于group的物料
+			- 聚合字段
+			```sql
+				GROUP_MATERIAL AS "material",
+				PLANT_CODE AS "plantCode",
+				MAX(OPEN_PO_QTY) as "OPEN_PO_QTY",
+				MAX(STOCK_ON_HAND) AS "currentStock",
+				MAX(SAFETY_STOCK * ${ssRatio}) AS "safetyStock",
+				MAX(AMF * ${amfRatio}) as "amf",
+				MAX(AMU * ${amuRatio}) as "amu",
+				MAX(MTD_ORDER_INTAKE) as "mtd_order_intake",
+				MAX(MTD_SALES) as "mtd_sales"
+			```
+
 
 
 
