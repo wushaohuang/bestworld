@@ -149,8 +149,12 @@
 		3. 对demandGroupList中的material@plant_code进行遍历，对每一个元素，获取demandGroupTotalMap.getOrDefault(group.getKey(), new HashMap并赋值给demand
 		4. 对demandGroupList中的material@plant_code进行遍历，对每一个元素，获取supplyGroupTotalMap.getOrDefault(group.getKey(), new HashMap并赋值给supply
 		5. demand和group中存放的是每个物料对应的详细数据ex：{PAST_DUE: 2000; TIPS_20230511_OSO_NORMAL: 1000}
-		6. 分别将demand和supply中的非数据列放入balance中，且 balance.put("CATEGORY", "Balance");
-
+		- 计算非数据列
+			1. 分别将demand和supply中的非数据列（不在dates中的列）放入balance中，且 balance.put("CATEGORY", "Balance");
+		- 计算数据列
+			1. 对于dates中每一个元素（对应表中的每一列）进行遍历
+			2. 
+		
 
 
 
