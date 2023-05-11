@@ -11,7 +11,7 @@
 - 开始计算数据主体
 - 获取前端值、排序、聚合等参数
 
-- 初始化日期数组dates（注意：dates是包含past_due字段的），并根据by day/week/month生成指定的表头（列名）存放于dates中
+- 初始化日期数组**dates**(数据列)（注意：dates是包含past_due字段的），并根据by day/week/month生成指定的表头（列名）存放于dates中
 
 - 初始化？？？？数组weightList，根据dates的大小分为0-3（*2）、4-7（*1）、8-∞（*0.5）
 
@@ -127,7 +127,7 @@
 		- 在DEMAND_SUPPLY_CRITICAL_LEVEL_SETTINGS中获取Critical Level
 
 - 计算 Balance
-	- 初始化groupBalanceMap和materialBalanceMap
+	- 初始化groupBalanceMap和materialBalanceMap和balance
 	- 计算group balance
 		1. queryReport1Group() 获取demand和supply中所有为group的料号信息（根据T.GROUP_MATERIAL IS NOT NULL进行筛选）
 			- 基于DEMAND_SUPPLY_DEMAND_V和DEMAND_SUPPLY_SUPPLY_V根据material+plant_code进行聚合，最后将两张表的结果进行拼接
@@ -145,6 +145,11 @@
 				MAX(MTD_ORDER_INTAKE) as "mtd_order_intake",
 				MAX(MTD_SALES) as "mtd_sales"
 			```
+		2. 将queryReport1Group()查询结果赋值给demandGroupList
+		3. 对demandGroupList中的material@plant_code进行遍历，对每一个元素，获取demandGroupTotalMap.getOrDefault(group.getKey(), new HashMap并赋值给demand
+		4. 对demandGroupList中的material@plant_code进行遍历，对每一个元素，获取supplyGroupTotalMap.getOrDefault(group.getKey(), new HashMap并赋值给supply
+		5. demand和group中存放的是每个物料对应的详细数据ex：{PAST_DUE: 2000; TIPS_20230511_OSO_NORMAL: 1000}
+		6. 分别将demand和supply中的非数据列放入balance中，且 balance.put("CATEGORY", "Balance");
 
 
 
