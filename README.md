@@ -1,23 +1,23 @@
 
 ![Schneider Electric Story - Word Cloud 2022](https://github.com/wushaohuang/wsh.github.io/assets/99949764/6a14f235-b43b-4803-b98d-2a3885b731cb)
 
-- 初始化ratio并获取前端的值
+### 初始化ratio并获取前端的值
 
-- openSOExcludeFilterList指open so用户**未**选中的部分
+### openSOExcludeFilterList指open so用户**未**选中的部分
 
-- 处理OPEN SO的筛选器
-- 如果用户选择了OPEN SO, 那就说明未选择的部分需要减去
+### 处理OPEN SO的筛选器
+### 如果用户选择了OPEN SO, 那就说明未选择的部分需要减去
 
-- 开始计算数据主体
-- 获取前端值、排序、聚合等参数
+### 开始计算数据主体
+### 获取前端值、排序、聚合等参数
 
-- 初始化日期数组**dates**(数据列)（注意：dates是包含past_due字段的），并根据by day/week/month生成指定的表头（列名）存放于dates中
+### 初始化日期数组**dates**(数据列)（注意：dates是包含past_due字段的），并根据by day/week/month生成指定的表头（列名）存放于dates中
 
-- 初始化？？？？数组weightList，根据dates的大小分为0-3（*2）、4-7（*1）、8-∞（*0.5）
+### 初始化？？？？数组weightList，根据dates的大小分为0-3（*2）、4-7（*1）、8-∞（*0.5）
 
-- 获取前端的demandDueSelections，将其拆分为FUTURE_DUE和PAST_DUE两个数组，并将两个数组合并到selectedCategory中
+### 获取前端的demandDueSelections，将其拆分为FUTURE_DUE和PAST_DUE两个数组，并将两个数组合并到selectedCategory中
 
-- queryReport1Demand()（item为dates中的元素）:+1:
+### queryReport1Demand()（item为dates中的元素）:+1:
     1. 判断selectedCategory是否为空，如果不为空，判断FUTURE_DUE和PAST_DUE中元素是否存在于CATEGORY中。如果存在，字段名为"'${item}'_QTY" AS "${item}"，否则，字段名为 0 AS "${item}"。其中item为dates中的元素
     2. 如果用户未选中OSO_NORMAL，则0 AS "TIPS_${item}_OSO_NORMAL",否则"'${item}'_OSO_NORMAL" AS "TIPS_${item}_OSO_NORMAL"
     3. OSO_CB、UD_MID_AGING、UD_CB、UD_NORMAL、UD_LONG_AGING同理（与OSO_NORMAL相同）
@@ -35,7 +35,7 @@
 	    ```
     6. 根据以上转换后的表和转换后的字段，进行查询得到demandList
 
-- queryReport1Supply()
+### queryReport1Supply()
     1. 整体框架 -> 创建MA_BASE(被MA_COMMIT使用)， 创建MA_COMMIT、PO_BASE、SUPPLY、PO_COMMIT四张临时表，然后将这四张临时表拼接起来（union all），然后PIVOT行转列，最后得到supplyList
     2. MA_BASE -> 源于DEMAND_SUPPLY_MANUAL_PO_COMMIT，根据USER_ID筛选，并根据MATERIAL, PLANT_CODE, COMMIT_DATE聚合
     3. MA_COMMIT -> 基于MA_BASE，'MANUAL' AS CONFIRM_CAT, 'Supply_PO' AS SUPPLY_CATEGORY，其余字段基本上是直接获取
@@ -70,7 +70,7 @@
       ```
     14. 根据以上转换后的表和转换后的字段，进行查询得到supplyList
 
-- demandList
+### demandList
     1. 基于demandList将demand信息分为2类, 一类是有group的, 一类是没有group的
     2. 初始化demandGroupMap和demandMaterialMap
 	    - 判断GROUP_MATERIAL字段是否为空，如果为空，则将获取到的“MATERIAL@PLANT_CODE”作为键值对的键存于demandMaterialMap中
@@ -90,7 +90,7 @@
 		- 对于每一个元素将其GROUP_MATERIAL设置为""，CATEGORY设置为Demand Total
     8. 最终将demandMaterialMap中所有元素根据material + plant_code聚合后的结果存入demandMaterialTotalMap中
 
-- supplyList
+### supplyList
     1. 基于supplyList将supply信息分为2类, 一类是有group的, 一类是没有group的
     2. 初始化supplyGroupMap和supplyMaterialMap
 		- 判断GROUP_MATERIAL字段是否为空，如果为空，则将获取到的“MATERIAL@PLANT_CODE”作为键值对的键存于demandMaterialMap中
@@ -110,18 +110,18 @@
 		- 对于每一个元素将其GROUP_MATERIAL设置为""，CATEGORY设置为Supply Total
     8. 最终将supplyMaterialMap中所有元素根据material + plant_code聚合后的结果存入supplyMaterialTotalMap中
 
-- 查询comments
+### 查询comments
     1. 查询当前周数并存于weekNo中(queryCurrentWeek())
     2. queryReport1CommentsByUserid()
 	    - 基于DEMAND_SUPPLY_COMMENTS
 	    - where条件为周数weekNo和用户id
     3. 初始化commentsMap，并将commentsList中的MATERIAL@PLANT_CODE作为键，COMMENTS作为值存入commentsMap
 
-- 获取Critical Level表达式
+### 获取Critical Level表达式
 	1. queryReport1CriticalScript()
 		- 在DEMAND_SUPPLY_CRITICAL_LEVEL_SETTINGS中获取Critical Level
 
-- 计算 Balance
+### 计算 Balance
 	- 初始化groupBalanceMap和materialBalanceMap和balance
 	- 计算group balance
 		1. queryReport1Group() 获取demand和supply中所有为group的料号信息（根据T.GROUP_MATERIAL IS NOT NULL进行筛选）
@@ -163,24 +163,24 @@
 				- 如果是week, 还要计算critical_level的变量
 	- 计算material balance与group balance方式一模一样
 	
-- 初始化balanceWeightList
+### 初始化balanceWeightList
 	- 将groupBalanceMap中的数据转换为指定数据格式，并存于balanceWeightList
 		- 数据格式 [{key:"ZB5AT84@O001"; type:"GROUP", orderMap: {weight: -321996.25045}}]
 	- 将materialBalanceMap中的数据转换为指定数据格式，并存于balanceWeightList
 		- 数据格式 [{key:"ZB5AT84@O001"; type:"MATERIAL", orderMap: {weight: -321996.25045}}]
 
-- DemandSupplyWeight中存放的是所有查询出来的基本结果，
+### DemandSupplyWeight中存放的是所有查询出来的基本结果，
 	- key：material@plant_code
 	- type: material/group
 	- orderMap: 排序列{weight: -321996.25045}
 
-- 排序，默认根据widght进行升序排序
+### 排序，默认根据widght进行升序排序
 	- DemandSupplyWeight 排序, 支持多列排序
 
-- 计算Total Demand和Total Supply
+### 计算Total Demand和Total Supply
 	- 初始化amuTotal，amfTotal，ssTotal，sohTotal，opoTotal，moiTotal，msTotal，demandTotal，supplyTotal，balanceTotal
 
-- 遍历balanceWeightList（此时包含页面中所有material@plant_code）
+### 遍历balanceWeightList（此时包含页面中所有material@plant_code）
 	- 如果是group
 		1. 对于demandGroupTotalMap的每一个元素
 			- 将它里面的数据列直接增量存于demandTotal中
@@ -223,9 +223,9 @@
 				- moiTotal += MTD_ORDER_INTAKE
 				- msTotal += MTD_SALES
 
-- 将上边算好的ssTotal、amfTotal、amuTotal、sohTotal、opoTotal、moiTotal、msTotal分别存放入（put）demandTotal、supplyTotal、balanceTotal中
+### 将上边算好的ssTotal、amfTotal、amuTotal、sohTotal、opoTotal、moiTotal、msTotal分别存放入（put）demandTotal、supplyTotal、balanceTotal中
 
-- 计算Total Balance
+### 计算Total Balance
 	1. 这个物料的可用库存 = 当前库存 - SS - AMU - AMF
 	2. 如果是By Day, 当日供给无法抵消当日需求
 		- balance = 可用库存 - 需求
@@ -234,15 +234,15 @@
 		- balance = 可用库存 - 需求 + 供给
 	4. 最终将balance存入balanceTotal中
 
-- 根据用户选择的显示行
+### 根据用户选择的显示行
 	1. 由demandSupplySelections获取用户勾选上的rows
 
-- 计算TOTAL PO_COVERAGE_DAYS =  (supplyopenPoQty + supplyStockOnHand) / (supplyAmf / 30)
+### 计算TOTAL PO_COVERAGE_DAYS =  (supplyopenPoQty + supplyStockOnHand) / (supplyAmf / 30)
 
-- 将demandTotal、supplyTotal、balanceTotal分别存入resultList中
+### 将demandTotal、supplyTotal、balanceTotal分别存入resultList中
 
-- 因为前面demandMaterialMap、demandMaterialTotalMap、supplyMaterialMap、supplyMaterialTotalMap、materialBalanceMap、demandGroupMap、demandGroupTotalMap、supplyGroupMap、supplyGroupTotalMap、groupBalanceMap中已经包含每颗料的基本信息，所以接下来只需要添加一些指定的计算逻辑即可，例如PO_COVERAGE_dAYS
-- 针对每一个物料单独做处理，根据DEMAND_DETAILS、DEMAND_TOTAL、SUPPLY_DETAILS、SUPPLY_TOTAL、BALANCE分别生成单独的行供前端使用
+### 因为前面demandMaterialMap、demandMaterialTotalMap、supplyMaterialMap、supplyMaterialTotalMap、materialBalanceMap、demandGroupMap、demandGroupTotalMap、supplyGroupMap、supplyGroupTotalMap、groupBalanceMap中已经包含每颗料的基本信息，所以接下来只需要添加一些指定的计算逻辑即可，例如PO_COVERAGE_dAYS
+### 针对每一个物料单独做处理，根据DEMAND_DETAILS、DEMAND_TOTAL、SUPPLY_DETAILS、SUPPLY_TOTAL、BALANCE分别生成单独的行供前端使用
 	- is group?
 		1. DEMAND_DETAILS
 			- 如果demandGroupMap存在这个料（material@plant_code）
