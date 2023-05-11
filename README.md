@@ -17,25 +17,22 @@
 
 - 获取前端的demandDueSelections，将其拆分为FUTURE_DUE和PAST_DUE两个数组，并将两个数组合并到selectedCategory中
 
-- queryReport1Demand()（item为dates中的元素）
+- queryReport1Demand()（item为dates中的元素）:+1:
     1. 判断selectedCategory是否为空，如果不为空，判断FUTURE_DUE和PAST_DUE中元素是否存在于CATEGORY中。如果存在，字段名为"'${item}'_QTY" AS "${item}"，否则，字段名为 0 AS "${item}"。其中item为dates中的元素
     2. 如果用户未选中OSO_NORMAL，则0 AS "TIPS_${item}_OSO_NORMAL",否则"'${item}'_OSO_NORMAL" AS "TIPS_${item}_OSO_NORMAL"
     3. OSO_CB、UD_MID_AGING、UD_CB、UD_NORMAL、UD_LONG_AGING同理（与OSO_NORMAL相同）
-```
- ------------------------------最外层字段取完-----------------------------------
-``` 
-
+    4. **最外层字段取完**
     5. 基于底表DEMAND_SUPPLY_DEMAND_V，根据PIVOT进行行转列
-    ```sql
-      SUM(QUANTITY ${valueColumnName}) QTY,
-      SUM(OSO_NORMAL ${valueColumnName}) OSO_NORMAL,
-      SUM(OSO_CB ${valueColumnName}) OSO_CB,
-      SUM(UD_MID_AGING ${valueColumnName}) UD_MID_AGING,
-      SUM(UD_CB ${valueColumnName}) UD_CB,
-      SUM(UD_NORMAL ${valueColumnName}) UD_NORMAL,
-      SUM(UD_LONG_AGING ${valueColumnName}) UD_LONG_AGING
-      -- 拼接上dates中的日期
-    ```
+	    ```sql
+	      SUM(QUANTITY ${valueColumnName}) QTY,
+	      SUM(OSO_NORMAL ${valueColumnName}) OSO_NORMAL,
+	      SUM(OSO_CB ${valueColumnName}) OSO_CB,
+	      SUM(UD_MID_AGING ${valueColumnName}) UD_MID_AGING,
+	      SUM(UD_CB ${valueColumnName}) UD_CB,
+	      SUM(UD_NORMAL ${valueColumnName}) UD_NORMAL,
+	      SUM(UD_LONG_AGING ${valueColumnName}) UD_LONG_AGING
+	      -- 拼接上dates中的日期
+	    ```
     6. 根据以上转换后的表和转换后的字段，进行查询得到demandList
 
 - queryReport1Supply()
@@ -45,28 +42,24 @@
     4. PO_BASE -> 基于DEMAND_SUPPLY_MANUAL_PO_COMMIT，根据USER_ID筛选
     5. SUPPLY -> 基于DEMAND_SUPPLY_SUPPLY_V，并根据PURCH_ORDER_NUMBER, PURCH_ORDER_ITEM聚合
     6. PO_COMMIT -> 基于PO_BASE，join SUPPLY；'Supply_PO' AS SUPPLY_CATEGORY
-```
-------------------------------临时表整理完成-----------------------------------
-```
-    7. 接下来做拼接，拼接由DEMAND_SUPPLY_SUPPLY_V，MA_COMMIT ，PO_COMMIT 三部分组成
-    8. 第一部分DEMAND_SUPPLY_SUPPLY_V ->
-    ```sql
-      DECODE(T.CONFIRM_CAT, 'FCST Commitment', 'Supply_' || T.DATA_LINE || '(FCST_Cmt)', 'Supply_' || T.DATA_LINE) CATEGORY, DECODE(T.CONFIRM_CAT, 'FCST Commitment', T.QUANTITY * ${fcstRatio}, T.QUANTITY) QUANTITY,
-      -- 最核心where条件 -> 
-      MATERIAL + PLANT_CODE不在MA_COMMIT中；PURCH_ORDER_NUMBER+PURCH_ORDER_ITEM不在PO_COMMIT中
-      ```
-    9. 第二部分MA_COMMIT ->
-      ```sql
-        'Supply_Manual' CATEGORY, DECODE(T.CONFIRM_CAT, 'FCST Commitment', T.QUANTITY * ${fcstRatio}, T.QUANTITY) QUANTITY,
-      ```
-    10. 第三部分
+    7. **临时表整理完成**
+    8. 接下来做拼接，拼接由DEMAND_SUPPLY_SUPPLY_V，MA_COMMIT ，PO_COMMIT 三部分组成
+    9. 第一部分DEMAND_SUPPLY_SUPPLY_V
+	    ```sql
+	      DECODE(T.CONFIRM_CAT, 'FCST Commitment', 'Supply_' || T.DATA_LINE || '(FCST_Cmt)', 'Supply_' || T.DATA_LINE) CATEGORY, DECODE(T.CONFIRM_CAT, 'FCST Commitment', T.QUANTITY * ${fcstRatio}, T.QUANTITY) QUANTITY,
+	      -- 最核心where条件
+	      MATERIAL + PLANT_CODE不在MA_COMMIT中；PURCH_ORDER_NUMBER+PURCH_ORDER_ITEM不在PO_COMMIT中
+	    ```
+    10. 第二部分MA_COMMIT
+	```sql
+		'Supply_Manual' CATEGORY, DECODE(T.CONFIRM_CAT, 'FCST Commitment', T.QUANTITY * ${fcstRatio}, T.QUANTITY) QUANTITY,
+	```
+    11. 第三部分
       ```sql
         'Supply_Manual' CATEGORY, DECODE(T.CONFIRM_CAT, 'FCST Commitment', T.QUANTITY * ${fcstRatio}, T.QUANTITY) QUANTITY
       ```
-```
- ------------------------------拼接完成-----------------------------------
-``` 
-    11. 根据PIVOT进行行转列
+    12. **拼接完成**
+    13. 根据PIVOT进行行转列
       ```sql
       SUM(QUANTITY${valueColumnName}) QTY,
                         SUM(AB${valueColumnName}) AB,
@@ -75,24 +68,21 @@
                       SUM(MANUAL_VALUE) MANUAL_VALUE
       -- 拼接上dates中的日期
       ```
-    12. 根据以上转换后的表和转换后的字段，进行查询得到supplyList
+    14. 根据以上转换后的表和转换后的字段，进行查询得到supplyList
 
 - demandList
     1. 基于demandList将demand信息分为2类, 一类是有group的, 一类是没有group的
     2. 初始化demandGroupMap和demandMaterialMap
 	    - 判断GROUP_MATERIAL字段是否为空，如果为空，则将获取到的“MATERIAL@PLANT_CODE”作为键值对的键存于demandMaterialMap中
 	    - 如果不为空，则将获取到的“GROUP_MATERIAL@PLANT_CODE”作为键值对的键存于demandGroupMap中
-
     3. 对demandGroupMap和demandMaterialMap分别算Total, 放在两个新的Map里（demandGroupTotalMap和demandMaterialTotalMap）
     4. 初始化demandGroupTotalMap和demandMaterialTotalMap
-
     5. demand group
 		- 针对demandGroupMap中的元素，将它的元素们根据material+plant_code汇总
 		- 不是dates元素或者TIPS开头的字段，在多行数据的情况下只取一行数据；日期或者TIPS开头的字段，在多行数据的情况下该字段取汇总值（sum）
       			- getOrDefault(key, default)如果存在key, 则返回其对应的value, 否则返回给定的默认值
 		- 对于每一个元素将其CATEGORY设置为Demand Total
     6. 最终将demandGroupMap中所有元素根据material + plant_code聚合后的结果存入demandGroupTotalMap中
-
     7. demand material
 		- 针对demandMaterialMap中的元素，将它的元素们根据material+plant_code汇总
 		- 不是dates元素或者TIPS开头的字段，在多行数据的情况下只取一行数据；日期或者TIPS开头的字段，在多行数据的情况下该字段取汇总值（sum）
