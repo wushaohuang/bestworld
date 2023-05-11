@@ -166,7 +166,47 @@
 					- supply is not null
 						- balance = 可用库存 - 需求 + 供给
 				- 如果是week, 还要计算critical_level的变量
+	- 计算material balance与group balance方式一模一样
+	
+- 初始化balanceWeightList
+	- 将groupBalanceMap中的数据转换为指定数据格式，并存于balanceWeightList
+		- 数据格式 [{key:"ZB5AT84@O001"; type:"GROUP", orderMap: {weight: -321996.25045}}]
+	- 将materialBalanceMap中的数据转换为指定数据格式，并存于balanceWeightList
+		- 数据格式 [{key:"ZB5AT84@O001"; type:"MATERIAL", orderMap: {weight: -321996.25045}}]
 
+- DemandSupplyWeight中存放的是所有查询出来的基本结果，
+	- key：material@plant_code
+	- type: material/group
+	- orderMap: 排序列{weight: -321996.25045}
+
+- 排序，默认根据widght进行升序排序
+	- DemandSupplyWeight 排序, 支持多列排序
+
+- 计算Total Demand和Total Supply
+	- 初始化amuTotal，amfTotal，ssTotal，sohTotal，opoTotal，moiTotal，msTotal，demandTotal，supplyTotal，balanceTotal
+
+- 遍历balanceWeightList（此时包含页面中所有material@plant_code）
+	- 如果是group
+		1. 对于demandGroupTotalMap的每一个元素
+			- 将它里面的数据列直接增量存于demandTotal中
+			- ssTotal += SAFETY_STOCK
+			- amuTotal += AMU
+			- amfTotal += AMF
+			- sohTotal += STOCK_ON_HAND
+			- opoTotal += OPEN_PO_QTY
+			- moiTotal += MTD_ORDER_INTAKE
+			- msTotal += MTD_SALES
+		2. 对于supplyGroupTotalMap的每一个元素
+			- 将它里面的数据列直接增量存于supplyTotal中
+			- 注意，此处有一个判断，对于相同的material+plant_code，如果在遍历demandGroupTotalMap时算过了ssTotal、amuTotal...等，在遍历supplyGroupTotalMap时就不会再重复追加了
+				- ssTotal += SAFETY_STOCK
+				- amuTotal += AMU
+				- amfTotal += AMF
+				- sohTotal += STOCK_ON_HAND
+				- opoTotal += OPEN_PO_QTY
+				- moiTotal += MTD_ORDER_INTAKE
+				- msTotal += MTD_SALES
+		
 
 
 
