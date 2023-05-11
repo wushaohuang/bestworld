@@ -17,7 +17,7 @@
 
 - 获取前端的demandDueSelections，将其拆分为FUTURE_DUE和PAST_DUE两个数组，并将两个数组合并到selectedCategory中
 
-- queryReport1Demand（item为dates中的元素）
+- queryReport1Demand()（item为dates中的元素）
     1. 判断selectedCategory是否为空，如果不为空，判断FUTURE_DUE和PAST_DUE中元素是否存在于CATEGORY中，如果存在，字段名为"'${item}'_QTY" AS "${item}"，否则，字段名为0 AS "${item}"。其中item为dates中的元素
     2. 如果用户未选中OSO_NORMAL，则0 AS "TIPS_${item}_OSO_NORMAL",否则"'${item}'_OSO_NORMAL" AS "TIPS_${item}_OSO_NORMAL"
     3. OSO_CB、UD_MID_AGING、UD_CB、UD_NORMAL、UD_LONG_AGING同理（与OSO_NORMAL相同）
@@ -35,7 +35,7 @@
     ```
     6. 根据以上转换后的表和转换后的字段，进行查询得到demandList
 
-- queryReport1Supply
+- queryReport1Supply()
     1. 整体框架 -> 创建MA_BASE(被MA_COMMIT使用)， 创建MA_COMMIT、PO_BASE、SUPPLY、PO_COMMIT四张临时表，然后将这四张临时表拼接起来（union all），然后PIVOT行转列，最后得到supplyList
     2. MA_BASE -> 源于DEMAND_SUPPLY_MANUAL_PO_COMMIT，根据USER_ID筛选，并根据MATERIAL, PLANT_CODE, COMMIT_DATE聚合
     3. MA_COMMIT -> 基于MA_BASE，'MANUAL' AS CONFIRM_CAT, 'Supply_PO' AS SUPPLY_CATEGORY，其余字段基本上是直接获取
@@ -116,11 +116,15 @@
     8. 最终将supplyMaterialMap中所有元素根据material + plant_code聚合后的结果存入supplyMaterialTotalMap中
 
 - 查询comments
-    1. 查询当前周数并存于weekNo中(queryCurrentWeek)
-    2. queryReport1CommentsByUserid
+    1. 查询当前周数并存于weekNo中(queryCurrentWeek())
+    2. queryReport1CommentsByUserid()
 	    - 基于DEMAND_SUPPLY_COMMENTS
 	    - where条件为周数weekNo和用户id
     3. 初始化commentsMap，并将commentsList中的MATERIAL@PLANT_CODE作为键，COMMENTS作为值存入commentsMap
+
+- 获取Critical Level表达式
+	1. queryReport1CriticalScript()
+		- 在DEMAND_SUPPLY_CRITICAL_LEVEL_SETTINGS中获取Critical Level
 
 
 
