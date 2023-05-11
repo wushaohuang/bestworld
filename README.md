@@ -240,6 +240,70 @@
 	4. 最终将balance存入balanceTotal中
 
 - 根据用户选择的显示行
+	1. 由demandSupplySelections获取用户勾选上的rows
+
+- 计算TOTAL PO_COVERAGE_DAYS =  (supplyopenPoQty + supplyStockOnHand) / (supplyAmf / 30)
+
+- 将demandTotal、supplyTotal、balanceTotal分别存入resultList中
+
+- 因为前面demandMaterialMap、demandMaterialTotalMap、supplyMaterialMap、supplyMaterialTotalMap、materialBalanceMap、demandGroupMap、demandGroupTotalMap、supplyGroupMap、supplyGroupTotalMap、groupBalanceMap中已经包含每颗料的基本信息，所以接下来只需要添加一些指定的计算逻辑即可，例如PO_COVERAGE_dAYS
+- 针对每一个物料单独做处理，根据DEMAND_DETAILS、DEMAND_TOTAL、SUPPLY_DETAILS、SUPPLY_TOTAL、BALANCE分别生成单独的行供前端使用
+	- is group?
+		1. DEMAND_DETAILS
+			- 如果demandGroupMap存在这个料（material@plant_code）
+				- PO_COVERAGE_DAYS = (openPoQty + stockOnHand) / (AMF / 30)
+					- openPoQty = OPEN_PO_QTY
+					- AMF = AMF
+					- stockOnHand = STOCK_ON_HAND
+			- 否则
+				- CATEGORY = Demand_No Records
+				- COMMENTS = null
+				- CRITICAL_LEVEL = null
+				- 其他dates中的数据列 = null
+		3. DEMAND_TOTAL
+			- 如果demandGroupTotalMap存在这个料（material@plant_code）
+				- PO_COVERAGE_DAYS = (openPoQty + stockOnHand) / (AMF / 30)
+					- openPoQty = OPEN_PO_QTY
+					- AMF = AMF
+					- stockOnHand = STOCK_ON_HAND
+			- 否则
+				- CATEGORY = Demand Total
+				- COMMENTS = null
+				- CRITICAL_LEVEL = null
+				- 其他dates中的数据列 = null
+		5. SUPPLY_DETAILS
+			- 如果supplyGroupMap存在这个料（material@plant_code）
+				- PO_COVERAGE_DAYS = (openPoQty + stockOnHand) / (AMF / 30)
+					- openPoQty = OPEN_PO_QTY
+					- AMF = AMF
+					- stockOnHand = STOCK_ON_HAND
+			- 否则
+				- CATEGORY = Supply_No Records
+				- COMMENTS = null
+				- CRITICAL_LEVEL = null
+				- 其他dates中的数据列 = null
+		7. SUPPLY_TOTAL
+			- 如果supplyGroupTotalMap存在这个料（material@plant_code）
+				- PO_COVERAGE_DAYS = (openPoQty + stockOnHand) / (AMF / 30)
+					- openPoQty = OPEN_PO_QTY
+					- AMF = AMF
+					- stockOnHand = STOCK_ON_HAND
+			- 否则
+				- CATEGORY = Supply Total
+				- COMMENTS = null
+				- CRITICAL_LEVEL = null
+				- 其他dates中的数据列 = null
+		9. BALANCE
+			- PO_COVERAGE_DAYS = (openPoQty + stockOnHand) / (AMF / 30)
+				- openPoQty = OPEN_PO_QTY
+				- AMF = AMF
+				- stockOnHand = STOCK_ON_HAND
+	- is not group? （和上边isGroup同理）
+		1. DEMAND_DETAILS
+		2. DEMAND_TOTAL
+		3. SUPPLY_DETAILS
+		4. SUPPLY_TOTAL
+		5. BALANCE
 
 
 		
