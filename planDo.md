@@ -15,4 +15,6 @@
     - getters： 类似于computed(计算属性，对现有的状态进行计算得到新的数据-------派生 )
     - actions： 发起异步请求
     - modules： 模块拆分
+5. 不知道怎么从页面中获取当前路由
+    - [vue3获取当前页面路由的四种方法](https://blog.csdn.net/qq_38974163/article/details/121762708?ydreferer=aHR0cHM6Ly93d3cuYmFpZHUuY29tL2xpbms%2FdXJsPTdDWnlXODUybW1Ka3Z0TXJ4Z0V3LVNabkFhTXlta0tfMEtCdWRDcmxoUlpxbEdBNWtyRE1uT0dCSHZWQ3Y2RVRGQTJEUFJWUVVTaVJtNWE1WDRKMWl6cTdVaUNfWHFVX05kcWM0eHR2b2ZLJndkPSZlcWlkPWE2NWRhNjVkMDAwMTkyYmYwMDAwMDAwNTY0NjM0YzJj)
 
