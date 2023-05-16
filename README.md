@@ -1,4 +1,4 @@
-![image](https://github.com/wushaohuang/bestworld/assets/99949764/624cebdb-fde3-4f95-aa80-7a6769c2e109)
+![image](https://github.com/wushaohuang/bestworld/assets/99949764/95feb9ac-9885-4f67-9cbb-7768c1073e79)
 
 - [src](#src)
   - [assets](#assets) : 存放静态文件，例如logo、图片等
