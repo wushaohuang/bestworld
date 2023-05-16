@@ -1,13 +1,4 @@
-
-```mermaid
-
-flowchart LR
-A[Hard] -->|Text| B(Round)
-B --> C{Decision}
-C -->|One| D[Result 1]
-C -->|Two| E[Result 2]
-```
-
+![image](https://github.com/wushaohuang/bestworld/assets/99949764/624cebdb-fde3-4f95-aa80-7a6769c2e109)
 
 - [src](#src)
   - [assets](#assets) : 存放静态文件，例如logo、图片等
