@@ -20,3 +20,11 @@
 
 6. 不懂git在.gitignore添加忽略文件不起作用
     - [git在.gitignore添加忽略文件不起作用](https://blog.csdn.net/qq_42937522/article/details/107744472?ydreferer=aHR0cHM6Ly93d3cuYmFpZHUuY29tL2xpbms%2FdXJsPTNOMUdoSUlwYW9ydFpheFk5OGxCQThsNkFPeTNyaWxORTU1eDZwTm1rLTVfY01saFlEMlJvbVIzempYSTJoNUR3UVVPT0dfTDZybmZveDhWX2haOWhNMmp4YmlobWlBc2N1bFoyMThXVm11JndkPSZlcWlkPWFkZmIwZGVhMDAxMGE0MDgwMDAwMDAwNTY0NjcwOTZj)
+7. 如何将前端获取的日期转换为指定格式，并计算它与今天所差的天数
+   ```java
+        String strDate = (String) parameterMap.get("report1StartDate");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date report1StartDate = dateFormat.parse(strDate);
+        Date currentTime = new Date();
+        long dayLength = (report1StartDate.getTime() - currentTime.getTime()) / 1000 / 60 / 60 / 24;
+   ```
