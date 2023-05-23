@@ -28,3 +28,6 @@
         Date currentTime = new Date();
         long dayLength = (report1StartDate.getTime() - currentTime.getTime()) / 1000 / 60 / 60 / 24;
    ```
+
+8. data: image/png； base64 用法详解（是Data URI scheme 直译过来的意思是：URI 数据处理方案）
+    - [data: image/png； base64 用法详解](https://blog.csdn.net/weixin_50339217/article/details/113387229)
